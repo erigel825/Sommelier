@@ -1,0 +1,4 @@
+project_id = "acqnmritdoondjgpsael"
+
+[functions.recommend-wines]
+verify_jwt = false

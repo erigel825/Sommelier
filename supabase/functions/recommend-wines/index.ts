@@ -8,9 +8,9 @@ const corsHeaders = {
 
 type ReqBody = {
   mode: "scan" | "pair";
-  imageDataUrl?: string;     // for scan mode
-  wineListText?: string;     // optional textual list
-  food?: string;             // for pair mode
+  imageDataUrl?: string; // for scan mode
+  wineListText?: string; // optional textual list
+  food?: string; // for pair mode
   preferences: {
     likes: string[];
     dislikes: string[];
@@ -50,7 +50,8 @@ Deno.serve(async (req: Request) => {
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -63,7 +64,7 @@ DINER PROFILE
 - Notes: ${body.preferences.notes || "(none)"}
 
 PRIOR TRIED WINES (use these to refine taste inference):
-${body.cellar.length ? body.cellar.map(c => `- ${c.name} [${c.rating}]${c.varietal ? ` — ${c.varietal}` : ""}${c.region ? `, ${c.region}` : ""}`).join("\n") : "(none yet)"}
+${body.cellar.length ? body.cellar.map((c) => `- ${c.name} [${c.rating}]${c.varietal ? ` — ${c.varietal}` : ""}${c.region ? `, ${c.region}` : ""}`).join("\n") : "(none yet)"}
 
 ${body.mode === "pair" ? `FOOD BEING EATEN: ${body.food}` : "Recommend versatile picks unless food is mentioned in the list."}
 
@@ -97,21 +98,27 @@ Return JSON only.
     if (!aiRes.ok) {
       const text = await aiRes.text();
       return new Response(JSON.stringify({ error: "AI gateway error", detail: text }), {
-        status: aiRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: aiRes.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const data = await aiRes.json();
     const content: string = data.choices?.[0]?.message?.content ?? "{}";
     let parsed: unknown;
-    try { parsed = JSON.parse(content); } catch { parsed = { recommendations: [], summary: content }; }
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      parsed = { recommendations: [], summary: content };
+    }
 
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
     return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

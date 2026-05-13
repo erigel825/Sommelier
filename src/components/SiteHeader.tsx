@@ -43,8 +43,8 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-3">
-            {!loading && (
-              user ? (
+            {!loading &&
+              (user ? (
                 <div className="flex items-center gap-3">
                   <Link
                     to="/profile"
@@ -69,8 +69,7 @@ export function SiteHeader() {
                 >
                   Sign in
                 </button>
-              )
-            )}
+              ))}
           </div>
         </div>
 
@@ -79,11 +78,7 @@ export function SiteHeader() {
           {links.map((l) => {
             const active = path === l.to;
             return (
-              <Link
-                key={l.to}
-                to={l.to}
-                className={`px-3 py-2 ${active ? "text-gold" : ""}`}
-              >
+              <Link key={l.to} to={l.to} className={`px-3 py-2 ${active ? "text-gold" : ""}`}>
                 {l.label}
               </Link>
             );

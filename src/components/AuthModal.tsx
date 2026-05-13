@@ -35,7 +35,9 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="relative w-full max-w-sm rounded-3xl border border-white/10 bg-card p-8 shadow-elegant">
         <button
@@ -62,7 +64,9 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
 
         <form onSubmit={submit} className="space-y-4">
           <label className="block">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gold/80">Email</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gold/80">
+              Email
+            </span>
             <input
               type="email"
               required
@@ -74,7 +78,9 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
           </label>
 
           <label className="block">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gold/80">Password</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gold/80">
+              Password
+            </span>
             <input
               type="password"
               required
@@ -87,7 +93,9 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
           </label>
 
           {message && (
-            <p className={`rounded-xl px-4 py-3 text-xs ${message.error ? "bg-destructive/10 text-destructive" : "bg-gold/10 text-gold"}`}>
+            <p
+              className={`rounded-xl px-4 py-3 text-xs ${message.error ? "bg-destructive/10 text-destructive" : "bg-gold/10 text-gold"}`}
+            >
               {message.text}
             </p>
           )}
@@ -105,7 +113,10 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
         <p className="mt-5 text-center text-xs text-muted-foreground">
           {mode === "sign-in" ? "No account?" : "Already have one?"}{" "}
           <button
-            onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setMessage(null); }}
+            onClick={() => {
+              setMode(mode === "sign-in" ? "sign-up" : "sign-in");
+              setMessage(null);
+            }}
             className="text-gold hover:underline"
           >
             {mode === "sign-in" ? "Sign up" : "Sign in"}

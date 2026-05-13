@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Preferences = {
   likes: string[];
@@ -49,46 +51,181 @@ function safeRead<T>(key: string, fallback: T): T {
   }
 }
 
+function localWrite(key: string, value: unknown) {
+  try { window.localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
+
+function useCurrentUser() {
+  const [user, setUser] = useState<User | null>(null);
+  const [resolved, setResolved] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
+      setResolved(true);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return { user, resolved };
+}
+
 export function usePreferences() {
-  const [prefs, setPrefs] = useState<Preferences>(DEFAULT_PREFERENCES);
+  const { user, resolved } = useCurrentUser();
+  const [prefs, setPrefsState] = useState<Preferences>(DEFAULT_PREFERENCES);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setPrefs(safeRead(PREF_KEY, DEFAULT_PREFERENCES));
-    setHydrated(true);
-  }, []);
+    if (!resolved) return;
+
+    if (user) {
+      supabase
+        .from("user_preferences")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) {
+            setPrefsState({
+              likes: data.likes ?? [],
+              dislikes: data.dislikes ?? [],
+              budget: (data.budget as Preferences["budget"]) ?? "any",
+              notes: data.notes ?? "",
+            });
+          } else {
+            // First login: migrate any localStorage data to the cloud
+            const local = safeRead(PREF_KEY, DEFAULT_PREFERENCES);
+            setPrefsState(local);
+            supabase.from("user_preferences").upsert({
+              user_id: user.id,
+              likes: local.likes,
+              dislikes: local.dislikes,
+              budget: local.budget,
+              notes: local.notes,
+            }).then(() => {});
+          }
+          setHydrated(true);
+        });
+    } else {
+      setPrefsState(safeRead(PREF_KEY, DEFAULT_PREFERENCES));
+      setHydrated(true);
+    }
+  }, [user, resolved]);
 
   const update = useCallback((next: Preferences) => {
-    setPrefs(next);
-    try { window.localStorage.setItem(PREF_KEY, JSON.stringify(next)); } catch {}
-  }, []);
+    setPrefsState(next);
+    if (user) {
+      supabase.from("user_preferences").upsert({
+        user_id: user.id,
+        likes: next.likes,
+        dislikes: next.dislikes,
+        budget: next.budget,
+        notes: next.notes,
+        updated_at: new Date().toISOString(),
+      }).then(() => {});
+    } else {
+      localWrite(PREF_KEY, next);
+    }
+  }, [user]);
 
   return { prefs, setPrefs: update, hydrated };
 }
 
 export function useCellar() {
-  const [cellar, setCellar] = useState<CellarEntry[]>([]);
+  const { user, resolved } = useCurrentUser();
+  const [cellar, setCellarState] = useState<CellarEntry[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setCellar(safeRead<CellarEntry[]>(CELLAR_KEY, []));
-    setHydrated(true);
-  }, []);
+    if (!resolved) return;
 
-  const persist = (next: CellarEntry[]) => {
-    setCellar(next);
-    try { window.localStorage.setItem(CELLAR_KEY, JSON.stringify(next)); } catch {}
-  };
+    if (user) {
+      supabase
+        .from("cellar")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("added_at", { ascending: false })
+        .then(({ data }) => {
+          if (data && data.length > 0) {
+            setCellarState(data.map((row) => ({
+              id: row.id,
+              name: row.name,
+              varietal: row.varietal ?? undefined,
+              region: row.region ?? undefined,
+              vintage: row.vintage ?? undefined,
+              rating: row.rating as CellarEntry["rating"],
+              notes: row.notes ?? undefined,
+              addedAt: row.added_at,
+            })));
+          } else {
+            // First login: migrate localStorage cellar to the cloud
+            const local = safeRead<CellarEntry[]>(CELLAR_KEY, []);
+            setCellarState(local);
+            if (local.length > 0) {
+              supabase.from("cellar").insert(
+                local.map((e) => ({
+                  id: e.id,
+                  user_id: user.id,
+                  name: e.name,
+                  varietal: e.varietal ?? null,
+                  region: e.region ?? null,
+                  vintage: e.vintage ?? null,
+                  rating: e.rating,
+                  notes: e.notes ?? null,
+                  added_at: e.addedAt,
+                }))
+              ).then(() => {});
+            }
+          }
+          setHydrated(true);
+        });
+    } else {
+      setCellarState(safeRead<CellarEntry[]>(CELLAR_KEY, []));
+      setHydrated(true);
+    }
+  }, [user, resolved]);
 
   const add = (entry: Omit<CellarEntry, "id" | "addedAt">): boolean => {
     const duplicate = cellar.some(
       (e) => e.name.trim().toLowerCase() === entry.name.trim().toLowerCase(),
     );
     if (duplicate) return false;
-    persist([{ ...entry, id: crypto.randomUUID(), addedAt: Date.now() }, ...cellar]);
+
+    const newEntry: CellarEntry = { ...entry, id: crypto.randomUUID(), addedAt: Date.now() };
+    const next = [newEntry, ...cellar];
+    setCellarState(next);
+
+    if (user) {
+      supabase.from("cellar").insert({
+        id: newEntry.id,
+        user_id: user.id,
+        name: newEntry.name,
+        varietal: newEntry.varietal ?? null,
+        region: newEntry.region ?? null,
+        vintage: newEntry.vintage ?? null,
+        rating: newEntry.rating,
+        notes: newEntry.notes ?? null,
+        added_at: newEntry.addedAt,
+      }).then(() => {});
+    } else {
+      localWrite(CELLAR_KEY, next);
+    }
     return true;
   };
-  const remove = (id: string) => persist(cellar.filter((e) => e.id !== id));
+
+  const remove = (id: string) => {
+    const next = cellar.filter((e) => e.id !== id);
+    setCellarState(next);
+    if (user) {
+      supabase.from("cellar").delete().eq("id", id).then(() => {});
+    } else {
+      localWrite(CELLAR_KEY, next);
+    }
+  };
+
   const isInCellar = (name: string) =>
     cellar.some((e) => e.name.trim().toLowerCase() === name.trim().toLowerCase());
 

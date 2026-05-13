@@ -14,7 +14,67 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_preferences: {
+        Row: {
+          user_id: string
+          likes: string[]
+          dislikes: string[]
+          budget: string
+          notes: string
+          updated_at: string
+        }
+        Insert: {
+          user_id: string
+          likes?: string[]
+          dislikes?: string[]
+          budget?: string
+          notes?: string
+          updated_at?: string
+        }
+        Update: {
+          user_id?: string
+          likes?: string[]
+          dislikes?: string[]
+          budget?: string
+          notes?: string
+          updated_at?: string
+        }
+      }
+      cellar: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          varietal: string | null
+          region: string | null
+          vintage: string | null
+          rating: string
+          notes: string | null
+          added_at: number
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          varietal?: string | null
+          region?: string | null
+          vintage?: string | null
+          rating: string
+          notes?: string | null
+          added_at?: number
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          varietal?: string | null
+          region?: string | null
+          vintage?: string | null
+          rating?: string
+          notes?: string | null
+          added_at?: number
+        }
+      }
     }
     Views: {
       [_ in never]: never

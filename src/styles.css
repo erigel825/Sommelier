@@ -1,0 +1,162 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-merlot: var(--merlot);
+  --color-merlot-deep: var(--merlot-deep);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-merlot: 0 20px 60px -20px oklch(0.32 0.12 15 / 0.55);
+  --shadow-elegant: 0 30px 80px -30px oklch(0 0 0 / 0.8);
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Midnight Reserve — dark by default */
+  --background: oklch(0.13 0.005 20);
+  --foreground: oklch(0.96 0.01 80);
+
+  --card: oklch(0.165 0.008 20);
+  --card-foreground: oklch(0.96 0.01 80);
+
+  --popover: oklch(0.16 0.008 20);
+  --popover-foreground: oklch(0.96 0.01 80);
+
+  --primary: oklch(0.34 0.13 18); /* merlot */
+  --primary-foreground: oklch(0.97 0.01 80);
+
+  --secondary: oklch(0.2 0.01 20);
+  --secondary-foreground: oklch(0.92 0.01 80);
+
+  --muted: oklch(0.19 0.008 20);
+  --muted-foreground: oklch(0.65 0.015 80);
+
+  --accent: oklch(0.78 0.115 85); /* gold */
+  --accent-foreground: oklch(0.18 0.01 20);
+
+  --destructive: oklch(0.55 0.21 25);
+  --destructive-foreground: oklch(0.98 0.01 80);
+
+  --border: oklch(1 0 0 / 0.07);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: oklch(0.78 0.115 85 / 0.5);
+
+  --merlot: oklch(0.34 0.13 18);
+  --merlot-deep: oklch(0.24 0.09 18);
+  --gold: oklch(0.78 0.115 85);
+  --gold-soft: oklch(0.78 0.115 85 / 0.55);
+
+  --sidebar: oklch(0.15 0.008 20);
+  --sidebar-foreground: oklch(0.92 0.01 80);
+  --sidebar-primary: oklch(0.34 0.13 18);
+  --sidebar-primary-foreground: oklch(0.97 0.01 80);
+  --sidebar-accent: oklch(0.2 0.01 20);
+  --sidebar-accent-foreground: oklch(0.92 0.01 80);
+  --sidebar-border: oklch(1 0 0 / 0.07);
+  --sidebar-ring: oklch(0.78 0.115 85 / 0.5);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+  ::selection {
+    background: oklch(0.34 0.13 18 / 0.45);
+    color: var(--foreground);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+@utility text-pretty {
+  text-wrap: pretty;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.animate-reveal {
+  animation: reveal-up 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.shimmer-gold {
+  background: linear-gradient(90deg, transparent, oklch(0.78 0.115 85 / 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
+}

@@ -43,12 +43,20 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="rounded-xl bg-merlot px-5 py-3 text-sm font-medium text-primary-foreground transition hover:bg-merlot/90"
           >
             Try again
           </button>
-          <a href="/" className="rounded-xl border border-white/10 px-5 py-3 text-sm text-foreground hover:bg-white/5">Home</a>
+          <a
+            href="/"
+            className="rounded-xl border border-white/10 px-5 py-3 text-sm text-foreground hover:bg-white/5"
+          >
+            Home
+          </a>
         </div>
       </div>
     </div>
@@ -62,9 +70,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#1a0c10" },
       { title: "Vintage.AI — Your AI Sommelier" },
-      { name: "description", content: "Snap a wine list. Get five perfect picks tailored to your palate, your meal, and your budget." },
+      {
+        name: "description",
+        content:
+          "Snap a wine list. Get five perfect picks tailored to your palate, your meal, and your budget.",
+      },
       { property: "og:title", content: "Vintage.AI — Your AI Sommelier" },
-      { property: "og:description", content: "Snap a wine list. Get five perfect picks tailored to your palate." },
+      {
+        property: "og:description",
+        content: "Snap a wine list. Get five perfect picks tailored to your palate.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -72,7 +87,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -84,7 +102,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+      </head>
       <body>
         {children}
         <Scripts />

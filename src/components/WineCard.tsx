@@ -77,10 +77,11 @@ export function WineCard({
             ].join(" ")}
             aria-label={inCellar ? "Already in cellar" : "Save to cellar"}
           >
-            {inCellar
-              ? <Check className="size-4 text-gold" />
-              : <Plus className="size-4 text-muted-foreground" />
-            }
+            {inCellar ? (
+              <Check className="size-4 text-gold" />
+            ) : (
+              <Plus className="size-4 text-muted-foreground" />
+            )}
           </button>
         )}
       </div>

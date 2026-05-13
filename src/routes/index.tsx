@@ -7,7 +7,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Vintage.AI — Your AI Sommelier" },
-      { name: "description", content: "Snap a wine list. Get five perfect picks tailored to your palate, your meal, and your budget." },
+      {
+        name: "description",
+        content:
+          "Snap a wine list. Get five perfect picks tailored to your palate, your meal, and your budget.",
+      },
     ],
   }),
   component: HomePage,
@@ -30,7 +34,8 @@ function HomePage() {
             </div>
 
             <h1 className="font-serif text-5xl leading-[1.05] text-foreground md:text-7xl text-balance">
-              The intelligent <span className="italic text-gold">bridge</span> between list and glass.
+              The intelligent <span className="italic text-gold">bridge</span> between list and
+              glass.
             </h1>
             <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
               Photograph any wine list, share what's on your plate, and let your private sommelier
@@ -77,7 +82,9 @@ function HomePage() {
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/60 to-transparent p-6">
                 <p className="font-serif text-lg italic text-gold">"Decant the moment."</p>
-                <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">— our standing recommendation</p>
+                <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">
+                  — our standing recommendation
+                </p>
               </div>
             </div>
           </div>
@@ -87,16 +94,38 @@ function HomePage() {
         <section className="mt-28">
           <div className="mb-10 flex items-end justify-between">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold/70">The Method</p>
-              <h2 className="mt-2 font-serif text-3xl text-foreground md:text-4xl">Three pours from list to perfect glass.</h2>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold/70">
+                The Method
+              </p>
+              <h2 className="mt-2 font-serif text-3xl text-foreground md:text-4xl">
+                Three pours from list to perfect glass.
+              </h2>
             </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { icon: Sparkles, title: "Tune your palate", body: "Pick the styles you love and the ones you'd rather skip. Log a few bottles you've tried — accuracy compounds.", to: "/profile", cta: "Calibrate" },
-              { icon: Camera, title: "Snap the list", body: "Open the camera at the table — wine shop, grocery aisle, or restaurant — and we read every bottle and price.", to: "/scan", cta: "Open scanner" },
-              { icon: ChefHat, title: "Pair with the meal", body: "Tell us what you're eating. Five picks come back with a sommelier-grade reason for each.", to: "/pair", cta: "Find a pairing" },
+              {
+                icon: Sparkles,
+                title: "Tune your palate",
+                body: "Pick the styles you love and the ones you'd rather skip. Log a few bottles you've tried — accuracy compounds.",
+                to: "/profile",
+                cta: "Calibrate",
+              },
+              {
+                icon: Camera,
+                title: "Snap the list",
+                body: "Open the camera at the table — wine shop, grocery aisle, or restaurant — and we read every bottle and price.",
+                to: "/scan",
+                cta: "Open scanner",
+              },
+              {
+                icon: ChefHat,
+                title: "Pair with the meal",
+                body: "Tell us what you're eating. Five picks come back with a sommelier-grade reason for each.",
+                to: "/pair",
+                cta: "Find a pairing",
+              },
             ].map((step) => (
               <Link
                 key={step.title}
@@ -142,7 +171,9 @@ function HomePage() {
 
       <footer className="mt-20 border-t border-white/5 bg-background py-12 text-center">
         <p className="font-serif text-lg text-gold/40">Vintage.AI</p>
-        <p className="mt-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Master your cellar · Trust your palate</p>
+        <p className="mt-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          Master your cellar · Trust your palate
+        </p>
       </footer>
     </div>
   );

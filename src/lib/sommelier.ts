@@ -20,7 +20,10 @@ export async function callSommelier(input: {
     body: {
       ...input,
       cellar: input.cellar.map((c) => ({
-        name: c.name, rating: c.rating, varietal: c.varietal, region: c.region,
+        name: c.name,
+        rating: c.rating,
+        varietal: c.varietal,
+        region: c.region,
       })),
     },
   });
